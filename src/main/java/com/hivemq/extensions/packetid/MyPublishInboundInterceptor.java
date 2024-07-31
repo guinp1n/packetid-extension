@@ -40,7 +40,17 @@ public class MyPublishInboundInterceptor implements PublishInboundInterceptor {
             final @NotNull PublishInboundOutput publishInboundOutput) {
 
         final ModifiablePublishPacket publishPacket = publishInboundOutput.getPublishPacket();
-        //publishPacket.getUserProperties().addUserProperty("debug-packet-id", "" + publishPacket.getPacketId());
-        log.info("Packet id {} received", publishPacket.getPacketId());
+
+        log.info("Packet id {} received, QoS: {}, Duplicate: {}, Retained: {}",
+                publishPacket.getPacketId(),
+                publishPacket.getQos().getQosNumber(),
+                publishPacket.getDupFlag(),
+                publishPacket.getRetain());
+
+        publishPacket.getUserProperties().addUserProperty("mqtt.message.id", "" + publishPacket.getPacketId());
+        publishPacket.getUserProperties().addUserProperty("mqtt.qos", "" + publishPacket.getQos().getQosNumber());
+        publishPacket.getUserProperties().addUserProperty("mqtt.duplicate", "" + publishPacket.getDupFlag());
+        publishPacket.getUserProperties().addUserProperty("mqtt.retained", "" + publishPacket.getRetain());
+
     }
 }
